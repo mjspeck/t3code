@@ -9,7 +9,8 @@ import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
-import { ChevronDownIcon } from "lucide-react";
+import type { ChatViewMode } from "@t3tools/contracts/settings";
+import { ChevronDownIcon, MessageSquareTextIcon, SquareTerminalIcon } from "lucide-react";
 import {
   memo,
   useEffect,
@@ -19,6 +20,7 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from "react";
 import { isTrailingDoubleClick } from "../Sidebar.logic";
+import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { toastManager } from "../ui/toast";
 import { useThreadActionMenu } from "~/hooks/useThreadActionMenu";
@@ -52,6 +54,9 @@ interface ChatHeaderProps {
   rightPanelOpen: boolean;
   onNewThreadInProject: () => void;
   onOpenProjectSettings?: (() => void) | undefined;
+  chatViewMode: ChatViewMode;
+  /** Absent where there is no thread to remember the choice for, such as a draft. */
+  onToggleChatViewMode?: (() => void) | undefined;
 }
 
 function resolveRenameCommit(input: {
@@ -77,6 +82,8 @@ export const ChatHeader = memo(function ChatHeader({
   rightPanelOpen,
   onNewThreadInProject,
   onOpenProjectSettings,
+  chatViewMode,
+  onToggleChatViewMode,
 }: ChatHeaderProps) {
   const activeProjectName = activeProject?.isScratch ? "No project" : activeProject?.title;
   const activeProjectCwd = activeProject?.workspaceRoot ?? null;
@@ -409,6 +416,31 @@ export const ChatHeader = memo(function ChatHeader({
         </WorkspaceBreadcrumbItem>
       </WorkspaceBreadcrumb>
       {isServerThread ? <GuestShareIndicator threadRef={activeThreadRef} /> : null}
+      {onToggleChatViewMode ? (
+        <ChatViewModeToggle mode={chatViewMode} onToggle={onToggleChatViewMode} />
+      ) : null}
     </div>
   );
 });
+
+function ChatViewModeToggle({
+  mode,
+  onToggle,
+}: {
+  readonly mode: ChatViewMode;
+  readonly onToggle: () => void;
+}) {
+  const label = mode === "chat" ? "Switch to terminal view" : "Switch to chat view";
+  const Icon = mode === "chat" ? SquareTerminalIcon : MessageSquareTextIcon;
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={<Button size="icon-xs" variant="ghost-muted" aria-label={label} />}
+        onClick={onToggle}
+      >
+        <Icon aria-hidden />
+      </TooltipTrigger>
+      <TooltipPopup side="bottom">{label}</TooltipPopup>
+    </Tooltip>
+  );
+}

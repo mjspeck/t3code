@@ -1,4 +1,5 @@
 import type { ScopedThreadRef } from "@t3tools/contracts";
+import type { ChatViewMode } from "@t3tools/contracts/settings";
 import { type ComponentProps, useLayoutEffect } from "react";
 import { useIncrementalTimelineEntries } from "../../hooks/useIncrementalTimelineEntries";
 import type { TimelineEntriesInput, TimelineEntry } from "../../session-logic";
@@ -10,6 +11,7 @@ import {
   timelineHasEphemeralPreviewUrls,
 } from "../ChatView.logic";
 import { MessagesTimeline } from "./MessagesTimeline";
+import { TerminalTranscript } from "./TerminalTranscript";
 
 /**
  * The timeline with the streamed text. ChatView reads the thread through its quiet
@@ -23,8 +25,10 @@ export function ThreadTimeline({
   activeThreadKey,
   syncing,
   detailLoading,
+  view,
   ...timelineProps
 }: Omit<ComponentProps<typeof MessagesTimeline>, "timelineEntries"> & {
+  view: ChatViewMode;
   /** Null until the thread's detail may load; see resolveThreadDetailRef. */
   threadDetailRef: ScopedThreadRef | null;
   entriesInput: Omit<TimelineEntriesInput, "visibleTurnItems">;
@@ -52,5 +56,17 @@ export function ThreadTimeline({
     }
     rememberReadyThreadTimeline({ threadKey: activeThreadKey, entries });
   }, [activeThreadKey, detailLoading, entries]);
+  if (view === "terminal") {
+    return (
+      <TerminalTranscript
+        key={activeThreadKey}
+        entries={displayedEntries}
+        isWorking={timelineProps.isWorking}
+        footer={timelineProps.footer}
+        bottomInset={timelineProps.contentInsetEndAdjustment}
+        topFadeEnabled={timelineProps.topFadeEnabled ?? false}
+      />
+    );
+  }
   return <MessagesTimeline {...timelineProps} timelineEntries={displayedEntries} />;
 }

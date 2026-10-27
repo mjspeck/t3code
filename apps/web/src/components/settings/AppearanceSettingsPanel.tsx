@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   DEFAULT_ENVIRONMENT_IDENTIFICATION_MODE,
   DEFAULT_UNIFIED_SETTINGS,
+  type ChatViewMode,
   type ChatWidth,
   type EnvironmentIdentificationMode,
   MAX_APPEARANCE_CONTRAST,
@@ -43,6 +44,11 @@ const CHAT_WIDTH_LABELS: Record<ChatWidth, string> = {
   comfortable: "Comfortable",
   wide: "Wide",
   full: "Full",
+};
+
+const CHAT_VIEW_MODE_LABELS: Record<ChatViewMode, string> = {
+  chat: "Chat",
+  terminal: "Terminal",
 };
 
 export function AppearanceSettingsPanel() {
@@ -226,6 +232,41 @@ export function AppearanceSettingsPanel() {
                   <SelectItem value="comfortable">Comfortable (default)</SelectItem>
                   <SelectItem value="wide">Wide</SelectItem>
                   <SelectItem value="full">Full</SelectItem>
+                </SelectPopup>
+              </Select>
+            </div>
+          }
+        />
+        <SettingsRow
+          {...searchableSetting("default-chat-view")}
+          description="Choose how threads open. Switch a single thread from its header."
+          resetAction={
+            settings.defaultChatViewMode !== DEFAULT_UNIFIED_SETTINGS.defaultChatViewMode ? (
+              <SettingResetButton
+                label="default chat view"
+                onClick={() =>
+                  updateSettings({
+                    defaultChatViewMode: DEFAULT_UNIFIED_SETTINGS.defaultChatViewMode,
+                  })
+                }
+              />
+            ) : null
+          }
+          control={
+            <div className="w-full sm:w-40">
+              <Select
+                value={settings.defaultChatViewMode}
+                onValueChange={(value) => {
+                  if (value === "chat" || value === "terminal")
+                    updateSettings({ defaultChatViewMode: value });
+                }}
+              >
+                <SelectTrigger size="sm" className="w-full min-w-0" aria-label="Default chat view">
+                  <SelectValue>{CHAT_VIEW_MODE_LABELS[settings.defaultChatViewMode]}</SelectValue>
+                </SelectTrigger>
+                <SelectPopup align="end" alignItemWithTrigger={false}>
+                  <SelectItem value="chat">Chat (default)</SelectItem>
+                  <SelectItem value="terminal">Terminal</SelectItem>
                 </SelectPopup>
               </Select>
             </div>

@@ -218,6 +218,7 @@ import {
 import { type TerminalContextDraft } from "../lib/terminalContext";
 import { collectInlineContextIds } from "../lib/composerContextReferences";
 import { selectThreadTerminalUiState, useTerminalUiStateStore } from "../terminalUiStateStore";
+import { useChatViewModeStore, useThreadChatViewMode } from "../chatViewModeStore";
 import { useKnownTerminalSessions, useThreadRunningTerminalIds } from "../state/terminalSessions";
 import { useEnvironmentQuery } from "../state/query";
 import { useEnvironmentScope } from "~/state/session";
@@ -894,6 +895,11 @@ export default function ChatView(props: ChatViewProps) {
   })();
   const activeThreadRef = useActiveThreadRef(activeThread);
   const activeThreadKey = activeThreadRef ? scopedThreadKey(activeThreadRef) : null;
+  const chatViewMode = useThreadChatViewMode(activeThreadKey, settings.defaultChatViewMode);
+  const toggleChatViewModeStable = useStableCallback(() => {
+    if (activeThreadKey === null) return;
+    useChatViewModeStore.getState().toggleThread(activeThreadKey, settings.defaultChatViewMode);
+  });
   const activeEnvironmentServerBrowser = useEnvironmentSupportsServerBrowser(
     activeThreadRef?.environmentId ?? null,
   );
@@ -2559,7 +2565,9 @@ export default function ChatView(props: ChatViewProps) {
   const timelineSkills = activeProviderStatus
     ? resolveProviderSkillsForCwd(activeProviderStatus, gitCwd)
     : EMPTY_PROVIDER_SKILLS;
-  const threadFindEnabled = isServerThread && serverConfig?.threadFind === true;
+  // The terminal transcript is plain text, so the browser's own find covers it.
+  const threadFindEnabled =
+    isServerThread && serverConfig?.threadFind === true && chatViewMode === "chat";
   const isThreadFindActive = useThreadFindOpen(activeThreadRef, threadFindEnabled);
 
   useChatShortcuts({
@@ -2582,8 +2590,7 @@ export default function ChatView(props: ChatViewProps) {
         if (!event.repeat) copyActiveThreadReference();
       },
       "chat.find": () => {
-        if (!isServerThread || serverConfig?.threadFind !== true || activeThreadKey === null)
-          return false;
+        if (!threadFindEnabled || activeThreadKey === null) return false;
         openThreadFind(activeThreadKey);
       },
       "composer.cycleHost": ({ event }) => {
@@ -3164,6 +3171,10 @@ export default function ChatView(props: ChatViewProps) {
             onOpenThread={onOpenRelatedThreadStable}
             rightPanelOpen={inlineRightPanelOwnsTitleBar}
             onNewThreadInProject={handleNewThreadInActiveProjectStable}
+            chatViewMode={chatViewMode}
+            {...(activeThreadKey === null
+              ? {}
+              : { onToggleChatViewMode: toggleChatViewModeStable })}
             {...(activeDraftLogicalProjectKey
               ? { onOpenProjectSettings: handleOpenDraftProjectSettingsStable }
               : {})}
@@ -3210,6 +3221,7 @@ export default function ChatView(props: ChatViewProps) {
             />
             <div className="relative flex min-h-0 flex-1 flex-col bg-background">
               <ThreadTimeline
+                view={chatViewMode}
                 threadDetailRef={routeThreadDetailRef}
                 entriesInput={timelineEntriesInput}
                 draftEntries={isServerThread ? null : draftTimelineEntries}
@@ -3302,7 +3314,7 @@ export default function ChatView(props: ChatViewProps) {
                   : { historyControls: threadHistoryControls })}
               />
 
-              {showScrollToBottom && !isThreadFindActive && (
+              {showScrollToBottom && !isThreadFindActive && chatViewMode === "chat" && (
                 <ScrollToEndButton
                   bottom={scrollToEndClearance + 4}
                   summary={scrollToEndSummary}

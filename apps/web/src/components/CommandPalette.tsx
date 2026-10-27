@@ -63,14 +63,17 @@ import {
   MessageSquareDashedIcon,
   LinkIcon,
   MessageSquareIcon,
+  MessageSquareTextIcon,
   PaletteIcon,
   RotateCcwIcon,
   SettingsIcon,
   SquarePenIcon,
+  SquareTerminalIcon,
   TextSearchIcon,
   UserPlusIcon,
 } from "lucide-react";
 import { openThreadFind } from "./chat/threadFindStore";
+import { useChatViewModeStore, useThreadChatViewMode } from "../chatViewModeStore";
 import {
   useDeferredValue,
   useEffect,
@@ -623,7 +626,10 @@ function OpenCommandPaletteDialog(props: {
   const activeThreadKey = activeThread
     ? scopedThreadKey(scopeThreadRef(activeThread.environmentId, activeThread.id))
     : null;
+  const defaultChatViewMode = useClientSettings((settings) => settings.defaultChatViewMode);
+  const chatViewMode = useThreadChatViewMode(activeThreadKey, defaultChatViewMode);
   const supportsThreadFind =
+    chatViewMode === "chat" &&
     environments.find((environment) => environment.environmentId === activeThread?.environmentId)
       ?.serverConfig?.threadFind === true;
   const currentProjectEnvironmentId =
@@ -1208,6 +1214,25 @@ function OpenCommandPaletteDialog(props: {
       shortcutCommand: "chat.find",
       run: async () => {
         openThreadFind(activeThreadKey);
+      },
+    });
+  }
+
+  if (activeThreadKey !== null) {
+    const threadKey = activeThreadKey;
+    const toTerminal = chatViewMode === "chat";
+    actionItems.push({
+      kind: "action",
+      value: "action:toggle-chat-view",
+      title: toTerminal ? "Switch to terminal view" : "Switch to chat view",
+      searchTerms: ["terminal", "chat", "view", "transcript", "monospace", "cli"],
+      icon: toTerminal ? (
+        <SquareTerminalIcon className={ITEM_ICON_CLASS} />
+      ) : (
+        <MessageSquareTextIcon className={ITEM_ICON_CLASS} />
+      ),
+      run: async () => {
+        useChatViewModeStore.getState().toggleThread(threadKey, defaultChatViewMode);
       },
     });
   }

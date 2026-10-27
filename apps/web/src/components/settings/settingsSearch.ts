@@ -314,6 +314,12 @@ export const SETTINGS_SEARCH_ITEMS = [
     searchTerms: ["wide full width column layout messages composer monitor"],
   },
   {
+    id: "default-chat-view",
+    title: "Default chat view",
+    to: "/settings/appearance",
+    searchTerms: ["terminal transcript monospace cli console thread layout"],
+  },
+  {
     id: "math-rendering",
     title: "Render math",
     to: "/settings/appearance",
