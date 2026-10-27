@@ -29,6 +29,16 @@ The controls retreat as the composer docks after you send the first message.
 Turn on **Composer context** to keep those controls visible after the thread starts. This preference
 applies to the web and desktop clients.
 
+## Terminal view
+
+On web and desktop, a thread can show its conversation as a plain terminal transcript instead of
+chat bubbles. Prompts, replies, commands, and tool calls appear as monospace lines, with long tool
+output shortened. Use the terminal icon in the thread header, or **Switch to terminal view** in the
+command palette, to switch the current thread. Each thread remembers its view on this device.
+
+Set **Default chat view** in **Settings → Appearance** to choose how threads open. Threads you
+have switched keep their own view.
+
 ## Math
 
 Turn on **Render math** in **Settings → Appearance** to typeset LaTeX in messages and Markdown
