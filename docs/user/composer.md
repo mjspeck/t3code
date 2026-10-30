@@ -338,6 +338,24 @@ File links refer to the environment's machine, including when you connect remote
 Previews use the original file, even outside the workspace. Moving or deleting it
 can break the preview, so save a copy if you need to keep it.
 
+## Code navigation
+
+On web and desktop, the file viewer jumps through source the way an editor does.
+Hold Command and click a name, or press F12, to open its definition. Shift+F12 lists
+every reference. Option+F12 peeks at the definition without leaving the line.
+Command+F12 finds implementations, and Command+Option+F12 opens the type definition.
+F2 renames a symbol across the files that declare and import it. Command+Option+O
+lists the symbols in the open file, and Command+Option+Shift+O searches symbols in
+the project. Option+Left and Option+Right move back and forward through those jumps.
+On Linux and Windows, Control takes the place of Command and Alt takes the place of
+Option.
+
+The header's symbol button opens the list for the current file. The same commands
+are in the command palette. These jumps follow imports and declarations. They work
+best for JavaScript and TypeScript, and also cover Python, Go, Rust, and other
+common languages. A name that exists only because of a macro or a generated file
+may not resolve.
+
 ## Files outside the workspace
 
 Follow an agent's file link to read a report or other file outside the workspace.

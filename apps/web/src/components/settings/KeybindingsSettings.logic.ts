@@ -368,6 +368,16 @@ export function commandLabel(command: KeybindingCommand): string {
   const usagePeriod = WINDOW_OPTIONS.find((option) => option.command === command);
   if (usagePeriod) return `Usage: Period: ${usagePeriod.label}`;
   if (command === "view.reopenClosed") return "Reopen Closed Tab";
+  if (command === "code.goToDefinition") return "Go to Definition";
+  if (command === "code.peekDefinition") return "Peek Definition";
+  if (command === "code.goToTypeDefinition") return "Go to Type Definition";
+  if (command === "code.goToImplementation") return "Go to Implementations";
+  if (command === "code.findReferences") return "Find All References";
+  if (command === "code.rename") return "Rename Symbol";
+  if (command === "code.documentSymbols") return "Go to Symbol in File";
+  if (command === "code.workspaceSymbols") return "Go to Symbol in Workspace";
+  if (command === "code.back") return "Code Navigation: Back";
+  if (command === "code.forward") return "Code Navigation: Forward";
   if (command === "preview.focusUrl") return "Preview: Focus URL";
   const raw = String(command);
   if (raw.startsWith("script.") && raw.endsWith(".run")) {

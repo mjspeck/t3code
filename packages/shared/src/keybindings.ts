@@ -208,6 +208,56 @@ export const DEFAULT_KEYBINDINGS: ReadonlyArray<KeybindingRule> = [
   { key: "mod+shift+arrowup", command: "modelPicker.previousProvider", when: "modelPickerOpen" },
   { key: "mod+shift+arrowdown", command: "modelPicker.nextProvider", when: "modelPickerOpen" },
   { key: "mod+o", command: "editor.openFavorite" },
+  {
+    key: "f12",
+    command: "code.goToDefinition",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "shift+f12",
+    command: "code.findReferences",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "alt+f12",
+    command: "code.peekDefinition",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "mod+f12",
+    command: "code.goToImplementation",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "mod+alt+f12",
+    command: "code.goToTypeDefinition",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "f2",
+    command: "code.rename",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "mod+alt+o",
+    command: "code.documentSymbols",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "mod+alt+shift+o",
+    command: "code.workspaceSymbols",
+    when: "!terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "alt+arrowleft",
+    command: "code.back",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
+  {
+    key: "alt+arrowright",
+    command: "code.forward",
+    when: "fileFocus && !terminalFocus && !editableFocus && !previewFocus",
+  },
   { key: "mod+shift+[", command: "thread.previous" },
   { key: "mod+shift+]", command: "thread.next" },
   { key: "mod+shift+c", command: "thread.copyReference", when: "!terminalFocus" },

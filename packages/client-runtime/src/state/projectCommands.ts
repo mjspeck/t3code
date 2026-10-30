@@ -229,5 +229,36 @@ export function createProjectEnvironmentAtoms<R, E>(
             fileMetadata.refreshPath(environmentId, path, registry);
         }),
     }),
+    codeNavigation: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:projects:code-navigation",
+      tag: WS_METHODS.projectsCodeNavigation,
+    }),
+    codeRename: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:projects:code-rename",
+      tag: WS_METHODS.projectsCodeRename,
+      scheduler: fileScheduler,
+      concurrency: {
+        mode: "serial",
+        key: ({ environmentId, input }) => JSON.stringify([environmentId, input.cwd]),
+      },
+      execute: (input) =>
+        requestGuarded(WS_METHODS.projectsCodeRename, input).pipe(
+          Effect.tap((result) =>
+            Effect.forEach(result.paths, (path) =>
+              fileMetadata.invalidate(resolveWorkspaceFilePath(path, input.cwd)),
+            ),
+          ),
+        ),
+      onSuccess: ({ environmentId, input }, registry, result) =>
+        Effect.sync(() => {
+          for (const path of result.paths) {
+            fileMetadata.refreshPath(
+              environmentId,
+              resolveWorkspaceFilePath(path, input.cwd),
+              registry,
+            );
+          }
+        }),
+    }),
   };
 }

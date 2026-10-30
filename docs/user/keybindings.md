@@ -157,6 +157,16 @@ field gets its own undo back. Terminals always keep their native shortcut.
 `navigation.back` (`mod+[` by default) and `navigation.forward` (`mod+]`) move
 through the pages you have visited, like a browser's back and forward buttons.
 
+`code.goToDefinition` (`f12`) jumps to the definition under the pointer in an open
+source file. `code.findReferences` (`shift+f12`) lists references, `code.peekDefinition`
+(`alt+f12`) shows the definition in place, `code.goToImplementation` (`mod+f12`) finds
+implementations, and `code.goToTypeDefinition` (`mod+alt+f12`) jumps to the type.
+`code.rename` (`f2`) renames the symbol. `code.documentSymbols` (`mod+alt+o`) lists
+symbols in the file, and `code.workspaceSymbols` (`mod+alt+shift+o`) searches the
+project. `code.back` (`alt+arrowleft`) and `code.forward` (`alt+arrowright`) move
+through those jumps. They apply while a source file is open and do not replace
+`navigation.back`.
+
 `chat.new` may ask you to choose a project when there is more than one.
 `chat.newLocal` skips that chooser. Both use your
 [new-thread defaults](./thread-sidebar.md#start-a-thread). `chat.newWithoutProject`

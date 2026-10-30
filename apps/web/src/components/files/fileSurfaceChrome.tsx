@@ -41,6 +41,21 @@ export const FILE_LINK_REVEAL_UNSAFE_CSS = `
     ) !important;
   }
 
+  [data-code-nav-occurrence][data-line] {
+    --diffs-line-bg: light-dark(
+      color-mix(
+        in lab,
+        var(--diffs-computed-diff-line-bg) 90%,
+        var(--diffs-bg-selection-override, var(--diffs-selection-base))
+      ),
+      color-mix(
+        in lab,
+        var(--diffs-computed-diff-line-bg) 84%,
+        var(--diffs-bg-selection-override, var(--diffs-selection-base))
+      )
+    ) !important;
+  }
+
   [${FILE_LINK_REVEAL_ATTRIBUTE}][data-column-number] {
     background-color: light-dark(
       color-mix(

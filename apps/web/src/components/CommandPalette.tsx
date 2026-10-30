@@ -56,12 +56,15 @@ import {
   CheckIcon,
   ChevronRightIcon,
   CornerLeftUpIcon,
+  BracesIcon,
   FileSearchIcon,
   FolderGit2Icon,
   FolderIcon,
   FolderPlusIcon,
   MessageSquareDashedIcon,
   LinkIcon,
+  ListTreeIcon,
+  LocateFixedIcon,
   MessageSquareIcon,
   PaletteIcon,
   RotateCcwIcon,
@@ -71,6 +74,7 @@ import {
   UserPlusIcon,
 } from "lucide-react";
 import { openThreadFind } from "./chat/threadFindStore";
+import { requestCodeNavigation } from "./files/codeNavigationStore";
 import {
   useDeferredValue,
   useEffect,
@@ -1369,6 +1373,70 @@ function OpenCommandPaletteDialog(props: {
     shortcutCommand: "filePicker.toggle",
     run: async () => {
       openChildSearch("files", { query, linkedThreadSearch });
+    },
+  });
+
+  const openCodeNavigation = (command: Parameters<typeof requestCodeNavigation>[0]) => {
+    if (requestCodeNavigation(command)) return;
+    toastManager.add({
+      title: "Open a source file",
+      description: "Code navigation works in the file viewer.",
+    });
+  };
+
+  actionItems.push({
+    kind: "action",
+    value: "action:go-to-definition",
+    searchTerms: ["go to definition", "definition", "f12", "symbol"],
+    title: "Go to Definition",
+    icon: <LocateFixedIcon className={ITEM_ICON_CLASS} />,
+    shortcutCommand: "code.goToDefinition",
+    run: async () => {
+      openCodeNavigation("definition");
+    },
+  });
+  actionItems.push({
+    kind: "action",
+    value: "action:find-references",
+    searchTerms: ["find references", "references", "usages"],
+    title: "Find All References",
+    icon: <TextSearchIcon className={ITEM_ICON_CLASS} />,
+    shortcutCommand: "code.findReferences",
+    run: async () => {
+      openCodeNavigation("references");
+    },
+  });
+  actionItems.push({
+    kind: "action",
+    value: "action:document-symbols",
+    searchTerms: ["symbols", "outline", "go to symbol"],
+    title: "Go to Symbol in File",
+    icon: <ListTreeIcon className={ITEM_ICON_CLASS} />,
+    shortcutCommand: "code.documentSymbols",
+    run: async () => {
+      openCodeNavigation("documentSymbols");
+    },
+  });
+  actionItems.push({
+    kind: "action",
+    value: "action:workspace-symbols",
+    searchTerms: ["workspace symbols", "symbol search", "go to symbol"],
+    title: "Go to Symbol in Workspace",
+    icon: <BracesIcon className={ITEM_ICON_CLASS} />,
+    shortcutCommand: "code.workspaceSymbols",
+    run: async () => {
+      openCodeNavigation("workspaceSymbols");
+    },
+  });
+  actionItems.push({
+    kind: "action",
+    value: "action:rename-symbol",
+    searchTerms: ["rename", "rename symbol", "f2"],
+    title: "Rename Symbol",
+    icon: <SquarePenIcon className={ITEM_ICON_CLASS} />,
+    shortcutCommand: "code.rename",
+    run: async () => {
+      openCodeNavigation("rename");
     },
   });
 

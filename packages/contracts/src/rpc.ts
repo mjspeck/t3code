@@ -380,6 +380,13 @@ import {
 } from "./sourceControl.ts";
 import { VcsError } from "./vcs.ts";
 import { Project, ProjectMutation, ProjectMutationError } from "./project.ts";
+import {
+  CodeNavigationRequest,
+  CodeNavigationResult,
+  CodeRenameRequest,
+  CodeRenameResult,
+  ProjectCodeNavigationError,
+} from "./codeNavigation.ts";
 
 export const WS_METHODS = {
   projectsList: "projects.list",
@@ -388,6 +395,8 @@ export const WS_METHODS = {
   projectsListEntries: "projects.listEntries",
   projectsListIgnoredFiles: "projects.listIgnoredFiles",
   projectsReadFile: "projects.readFile",
+  projectsCodeNavigation: "projects.codeNavigation",
+  projectsCodeRename: "projects.codeRename",
   projectsSearchContents: "projects.searchContents",
   projectsSearchEntries: "projects.searchEntries",
   projectsWriteFile: "projects.writeFile",
@@ -1244,6 +1253,18 @@ const WsProjectsReadFileRpc = Rpc.make(WS_METHODS.projectsReadFile, {
   error: Schema.Union([ProjectReadFileError, EnvironmentAuthorizationError]),
 });
 
+const WsProjectsCodeNavigationRpc = Rpc.make(WS_METHODS.projectsCodeNavigation, {
+  payload: CodeNavigationRequest,
+  success: CodeNavigationResult,
+  error: Schema.Union([ProjectCodeNavigationError, EnvironmentAuthorizationError]),
+});
+
+const WsProjectsCodeRenameRpc = Rpc.make(WS_METHODS.projectsCodeRename, {
+  payload: CodeRenameRequest,
+  success: CodeRenameResult,
+  error: Schema.Union([ProjectCodeNavigationError, EnvironmentAuthorizationError]),
+});
+
 const WsProjectsWriteFileRpc = Rpc.make(WS_METHODS.projectsWriteFile, {
   payload: ProjectWriteFileInput,
   success: ProjectWriteFileResult,
@@ -2026,6 +2047,8 @@ export const WsRpcGroup = RpcGroup.make(
   WsProjectsListEntriesRpc,
   WsProjectsListIgnoredFilesRpc,
   WsProjectsReadFileRpc,
+  WsProjectsCodeNavigationRpc,
+  WsProjectsCodeRenameRpc,
   WsProjectsSearchContentsRpc,
   WsProjectsSearchEntriesRpc,
   WsProjectsEnsureScratchRpc,
